@@ -45,8 +45,6 @@ export const ButtonWrapper = styled.div<ButtonWrapperProps>`
 
         & span {
             font-size: 14px;
-            color: black;
-            text-decoration: none;
         }
     }
 

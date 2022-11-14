@@ -88,6 +88,8 @@ export const GlobalStyle = createGlobalStyle`
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: black;
+            text-decoration: none;
         }
 
         .container-button {
