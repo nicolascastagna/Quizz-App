@@ -1,14 +1,16 @@
 import { useState } from "react";
+// Components
 import QuestionCard from "./components/QuestionCard";
+// Types
 import { Difficulty, fetchQuizzQuestions, QuestionsState } from './utils/API';
+// Styles
+import { GlobalStyle, Wrapper } from "./App.styles";
 
-type AnswerObject = {
+export type AnswerObject = {
   question: string;
-  answer: string; 
+  answer: string;
   correct: boolean;
-  correct_answer: string;
-  incorrect: boolean;
-  incorrect_answer: string;
+  correctAnswer: string;
 }
 
 const App: React.FC = () => {
@@ -20,8 +22,6 @@ const App: React.FC = () => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
   const [total, setTotal] = useState(10);
-
-  console.log(questions);
 
   const startQuizz = async () => {
   
@@ -37,35 +37,73 @@ const App: React.FC = () => {
     }
   
   const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
-
-  }
+    if (!gameOver) {
+      // Users answer
+      const answer = e.currentTarget.value;
+      // Check correct answer
+      const correct = questions[number].correct_answer === answer;
+      // Add score if correct
+      if (correct) setScore((prev) => prev +1);
+      // Save score in array
+      const answerObject:any = {
+        question: questions[number].question,
+        answer,
+        correct,
+        correctAnswer: questions[number].correct_answer,
+      };
+      setUserAnswers((prev) => [...prev, answerObject]);
+    }
+  };
 
   const nextQuestion = () => {
-
+    // Move next question, if not last question
+    const nextQuestion = number +1;
+    if (nextQuestion === total) {
+      setGameOver(true);
+    } else {
+      setNumber(nextQuestion);
+    }
   }
 
   return (
-    <main className="main">
-      <h1>Quizz App</h1>
+    <>
+    <GlobalStyle />
+    <Wrapper>
+      <div className="css-bg"></div>
+      <h1 onClick={() =>
+          window.location.replace("/")
+        }>Quizz App</h1>
       {gameOver || userAnswers.length === total ? (
       <button className="start" onClick={startQuizz}>
         Start
       </button>
       ) : null}
-      <p className="score">Score:</p>
-      <p>Loading Questions...</p>
-      {/* <QuestionCard 
+      {!gameOver ? <p className="score">Score: {score}</p> : null}
+     {loading && <span className="loader"></span>} 
+      {!loading && !gameOver && (
+      <QuestionCard 
       questionNumber={number + 1}
       totalQuestions={total}
       question={questions[number].question}
       answers={questions[number].answers}
       userAnswer={userAnswers ? userAnswers[number] : undefined}
       callback={checkAnswer}
-      /> */}
+      />
+      )}
+      <div className="container-button">
+      {!gameOver && !loading ? (
+        <button className="restart next-question" onClick={() =>
+          window.location.replace("/")
+        }>Restart</button>
+      ): null}
+      {!gameOver && !loading && userAnswers.length === number +1 && number !== total -1 ? (
       <button className="next-question" onClick={nextQuestion}>
         Next Question
       </button>
-    </main>
+      ) : null}
+      </div>
+    </Wrapper>
+    </>
   );
 }
 

@@ -19,19 +19,17 @@ export enum Difficulty {
 }
 
 export const fetchQuizzQuestions = async (amount: number, difficulty: Difficulty) => {
-    const endpoint = `https://opentdb.com/api.php?amount=${amount}&difficulty=${difficulty}&type=multiple`;
-    await (await axios.get(endpoint, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }).then((res) => {
-        console.log(res.data.results);
-        return res.data.results.map((question: Question) => (
-            {
-                ...question,
-                answers: shuffleArray([ ...question.incorrect_answers, question.correct_answer]),
-            }
-        ))
-    }))
+try {
+  const endpoint = `https://opentdb.com/api.php?amount=${amount}&difficulty=${difficulty}&type=multiple`;
+  const data = await (await fetch(endpoint)).json();
+  return data.results.map((question: Question) => ({
+    ...question,
+    answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+  }))
+} catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('error message: ', error.message);
+      return error.message;
+    }
+  }
 }
