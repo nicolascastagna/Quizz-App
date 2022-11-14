@@ -13,6 +13,8 @@ export type AnswerObject = {
   correctAnswer: string;
 }
 
+const total = 10;
+
 const App: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,6 @@ const App: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
-  const [total, setTotal] = useState(10);
 
   const startQuizz = async () => {
   
